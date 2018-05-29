@@ -24,7 +24,7 @@ class GoogleWikiTestCase(unittest.TestCase):
         simq = ""
         points = []
 
-        simq, neg = answer_bot.simplify_ques(question, debug=True)
+        simq, neg = answer_bot.simplify_ques(question, debug=False)
 
         maxo=""
         m = 1
