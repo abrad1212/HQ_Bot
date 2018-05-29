@@ -8,7 +8,7 @@ Since it is against the policy of HQ-trivia I do not encourage anyone to use thi
 
 ## Packages Used
 
-Use python 3.6. In particular the packages/libraries used are...
+Use Python 3.6. In particular the packages/libraries used are...
 
 * JSON - Data Storage
 * Pillow - Image manipulation
@@ -17,7 +17,7 @@ Use python 3.6. In particular the packages/libraries used are...
 * pytesseract - Google's free/open source OCR (requires seperate installtion)
 * beautifulsoup4 - Parse google searches/html
 * lxml - Beautifulsoup parser
-* opencv2 - Image maniplulation
+* OpenCV2 - Image maniplulation
 
 ### To easily install these
 

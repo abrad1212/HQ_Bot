@@ -71,35 +71,22 @@ def screen_grab(save, location):
 
 	return np.array(im)
 
+def preprocess_img(img):
+	gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+	gray = cv2.threshold(gray, 0, 255,
+			cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
+	gray = cv2.resize(gray, (0, 0), fx=0.5, fy=0.5)
+	return gray
+
 # get OCR text //questions and options
 def read_screen():
 	spinner = Halo(text='Reading screen', spinner='bouncingBar')
 	spinner.start()
 
-	# Prepare ArgParse
-	'''ap = argparse.ArgumentParser(description='HQ_Bot')
-	ap.add_argument("-s", "--save", type=bool, default=False, help="Should the image be saved?")
-	ap.add_argument("-p", "--preprocess", type=str, default="thresh", help="type of preprocessing to be done")
-	args = vars(ap.parse_args())'''
-
-	#screenshot_time = time.time()
 	screenshot_file = os.path.join('Screens', 'to_ocr.png')
 	image = screen_grab(save=False, location=screenshot_file)
-	#print("\nScreenshot Elapsed Time: {}".format(time.time() - screenshot_time))
-
-	# load the image
-	# preprocess_time = time.time()
-	gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-
-	'''if args["preprocess"] == "thresh":
-		gray = cv2.threshold(gray, 0, 255,
-			cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-	elif args["preprocess"] == "blur":
-		gray = cv2.medianBlur(gray, 3)'''
-
-	gray = cv2.threshold(gray, 0, 255,
-			cv2.THRESH_BINARY | cv2.THRESH_OTSU)[1]
-	gray = cv2.resize(gray, (0, 0), fx=0.5, fy=0.5)
+	gray = preprocess_img(image)
 
 	# store grayscale image as a temp file to apply OCR
 	'''filename = "Screens/{}.png".format(os.getpid())
