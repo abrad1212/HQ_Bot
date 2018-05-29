@@ -17,7 +17,6 @@ from functools import partial
 
 import cv2
 from PIL import Image
-from PIL import ImageGrab
 import urllib.request as urllib2
 from bs4 import BeautifulSoup
 import numpy as np
@@ -26,6 +25,11 @@ from google import google
 from halo import Halo
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
+
+if sys.platform != "linux" or sys.platform != "linux2":
+	from PIL import ImageGrab
+else:
+	import pyscreenshot as ImageGrab
 
 #sys.path.append("C:\Program Files\Brainwy\PyVmMonitor 1.1.2\public_api")
 #import pyvmmonitor
@@ -63,7 +67,6 @@ def load_json(debug=False):
 
 # take screenshot of question
 def screen_grab(save, location):
-	# 31,228 485,620 co-ords of screenshot// left side of screen
 	im = ImageGrab.grab(bbox=(20, 260, 520, 700))
 
 	if save:
