@@ -18,6 +18,7 @@ from functools import partial
 
 import cv2
 from PIL import Image
+from PIL import ImageGrab
 import urllib.request as urllib2
 from bs4 import BeautifulSoup
 import numpy as np
@@ -26,11 +27,6 @@ from google import google
 from halo import Halo
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
-
-if platform.system() != "Linux":
-	from PIL import ImageGrab
-else:
-	import pyscreenshot as ImageGrab
 
 # for terminal colors
 class bcolors:

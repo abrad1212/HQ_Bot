@@ -2,10 +2,11 @@ language: python
 python:
   - "3.6"
 
+os:
+  - osx
+
 # command to install dependencies
 install:
-  - sudo apt-get install python-dev xvfb x11-utils x11-apps
-  - sudo apt-get install scrot imagemagick
   - pip install -r requirements.txt
 
 cache: pip
