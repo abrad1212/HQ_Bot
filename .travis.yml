@@ -8,4 +8,5 @@ install:
 
 cache: pip
 script:
-  - pytest
+  - python tests/AnswerTest.py
+  - python tests/ImageTest.py
