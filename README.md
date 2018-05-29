@@ -19,8 +19,9 @@ Use python 3.6. In particular the packages/libraries used are...
 * lxml - Beautifulsoup parser
 * opencv2 - Image maniplulation
 
-*To easily install these*
-1. Install python 3.6
+### To easily install these
+
+1. Install Python 3.6
 2. Install above packages
     * `$ pip3 install -r requirements.txt`
 3. Tesseract
@@ -45,12 +46,6 @@ $ python3 answer_bot.py
 Press s to screenshot live game or q to quit:
 ...Question...
 ```
-
-## Screenshots
-
-<img src="https://github.com/sushant10/HQ_Bot/blob/master/Screens/screenshot3.png" width="900" height="540" />
-<img src="https://github.com/sushant10/HQ_Bot/blob/master/Screens/screenshot2.png" width="500" height="320" />
-
 
 ## Contributing
 
