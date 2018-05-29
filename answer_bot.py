@@ -12,6 +12,7 @@ import sys
 import time
 import json
 import argparse
+import platform
 from multiprocessing import Pool
 from functools import partial
 
@@ -26,14 +27,10 @@ from halo import Halo
 import pytesseract
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
 
-if sys.platform != "linux" or sys.platform != "linux2":
+if platform.system() != "Linux":
 	from PIL import ImageGrab
 else:
 	import pyscreenshot as ImageGrab
-
-#sys.path.append("C:\Program Files\Brainwy\PyVmMonitor 1.1.2\public_api")
-#import pyvmmonitor
-#pyvmmonitor.connect()
 
 # for terminal colors
 class bcolors:
