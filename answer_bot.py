@@ -88,11 +88,6 @@ def read_screen():
 	image = screen_grab(save=False, location=screenshot_file)
 	gray = preprocess_img(image)
 
-	# store grayscale image as a temp file to apply OCR
-	'''filename = "Screens/{}.png".format(os.getpid())
-	cv2.imwrite(filename, gray)
-	print("\nPreprocessing Elapsed Time: {}".format(time.time() - preprocess_time))'''
-
 	# extract_text_time = time.time()
 	# load the image as a PIL/Pillow image, apply OCR, and then delete the temporary file
 	text = pytesseract.image_to_string(Image.fromarray(gray))
