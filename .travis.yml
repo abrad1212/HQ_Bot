@@ -15,7 +15,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink python; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link python; fi
 
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then pip uninstall numpy; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python3 -m pip uninstall numpy; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv; fi
 
 install:
