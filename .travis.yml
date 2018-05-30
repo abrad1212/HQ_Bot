@@ -15,7 +15,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install pyenv-virtualenv; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew unlink python; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew link python; fi
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python3 --version; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install opencv; fi
 
 install:
   - python3 -m pip install --user -r requirements.txt
