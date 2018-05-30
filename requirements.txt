@@ -1,4 +1,5 @@
 -e git+https://github.com/abenassi/Google-Search-API.git#egg=google-search-api
+
 apipkg==1.4
 astroid==1.6.4
 atomicwrites==1.1.5
@@ -16,7 +17,6 @@ enum34==1.1.6
 execnet==1.5.0
 fake-useragent==0.1.10
 future==0.16.0
-Google-Search-API==1.1.14
 graphviz==0.8.3
 halo==0.0.12
 idna==2.6
