@@ -46,12 +46,9 @@ remove_words = []
 negative_words= []
 
 # load sample questions
-def load_json(debug=False):
+def load_json():
     global remove_words, negative_words
-    if debug is False:
-        path = "Data/settings.json"
-    else:
-        path = "../Data/settings.json"
+    path = "Data/settings.json"
 
     settings = json.loads(open(path, encoding="utf8").read())
 
@@ -118,15 +115,13 @@ def parse_question():
 # simplify question and remove which,what....etc //question is string
 def simplify_ques(question, debug=False):
     if debug is True:
-        load_json(debug=True)
+        load_json()
 
     neg = False
     qwords = question.lower().split()
     for i in qwords:
         if i in negative_words:
             neg = True
-    #if [i for i in qwords if i in negative_words]:
-    #	neg=True
 
     cleanwords = [word for word in qwords if word.lower() not in remove_words]
     temp = ' '.join(cleanwords)

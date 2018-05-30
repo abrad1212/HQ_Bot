@@ -24,7 +24,7 @@ class GoogleWikiTestCase(unittest.TestCase):
         simq = ""
         points = []
 
-        simq, neg = answer_bot.simplify_ques(question, debug=False)
+        simq, neg = answer_bot.simplify_ques(question, debug=True)
 
         maxo=""
         m = 1
@@ -33,6 +33,7 @@ class GoogleWikiTestCase(unittest.TestCase):
 
         points, maxo = answer_bot.google_wiki_faster(simq, options, neg)
         check = maxo[1] == "graveyard whistling"
+        print(maxo)
         self.assertTrue(check)
 
 if __name__ == '__main__':
