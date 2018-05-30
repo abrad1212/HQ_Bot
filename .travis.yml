@@ -1,9 +1,15 @@
 language: python
 python:
   - "3.6"
-
-os:
-  - osx
+cache: pip
+matrix:
+  include:
+    - os: osx
+      language: generic
+      env: PYTHON=3.6.5
+    - os: osx
+      language: generic
+      env: PYTHON=3.6.5 TEST_MODE=PEP8
 
 # command to install dependencies
 before_install: |
@@ -32,14 +38,9 @@ before_install: |
 install:
   - python -m pip install --user -r requirements.txt
 
-cache: pip
 script:
-  - python tests/AnswerTest.py
-  - python tests/ImageTest.py
-
-matrix:
-  include:
-    - os: osx
-      language: generic
-      env: PYTHON=3.6.5
-  fast_finish: true
+  - if [[ "$TEST_MODE" == "PEP8" ]]; then
+      pytest --pep8
+    else
+      pytest
+    fi
