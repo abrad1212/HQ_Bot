@@ -56,3 +56,5 @@ install:
 test_script:
   # Run the project tests
   - "%CMD_IN_ENV% pytest"
+
+build: off
