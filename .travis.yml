@@ -18,7 +18,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then python3 --version; fi
 
 install:
-  - python3 -m pip install -r requirements.txt
+  - python3 -m pip install --user -r requirements.txt
 
 cache: pip
 script:
