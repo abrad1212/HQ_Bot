@@ -40,7 +40,7 @@ install:
 
 script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
-      pytest --pep8
+      pytest --pep8;
     else
-      pytest
+      pytest;
     fi
