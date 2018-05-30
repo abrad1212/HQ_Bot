@@ -30,7 +30,7 @@ before_install: |
   fi
 
 install:
-  - python3 -m pip install --user -r requirements.txt
+  - python -m pip install --user -r requirements.txt
 
 cache: pip
 script:
@@ -41,5 +41,5 @@ matrix:
   include:
     - os: osx
       language: generic
-      env: PYTHON=3.6.
+      env: PYTHON=3.6.5
   fast_finish: true
