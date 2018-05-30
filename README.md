@@ -1,6 +1,6 @@
-# HQ_Bot 🤖
+# HQ Bot 🤖
 
-![License: MIT][ico-license]
+![License: MIT][ico-license] [![Travis](https://img.shields.io/travis/abrad1212/HQ_Bot.svg?style=flat-square)](https://github.com/abrad1212/HQ_Bot)
 
 A bot to help answer questions on trivia apps like HQ and CashShow. This bot takes screenshot of the game on the phone and uses googles tesseract OCR to read the questions and options. It automates the process of googling of the answers and gives the most likely answer! It is 70%+ accurate!
 
