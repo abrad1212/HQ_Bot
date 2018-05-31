@@ -34,6 +34,8 @@ Use Python 3.6. In particular the packages/libraries used are...
         * <img src="https://github.com/abrad1212/HQ_Bot/blob/master/resources/tesseract-binary.png" width=500 height=500 />
 4. For opencv
     * `$ brew install opencv`
+5. Install main package
+    * `$ python3 setup.py install`
 
 ## Usage
 
@@ -43,9 +45,9 @@ Make sure all packages above are installed. For android phones use [Vysor][link-
 $ git clone https://github.com/abrad1212/HQ_Bot
 $ cd HQ_Bot
 $ pip3 install -r requirements.txt
-$ python3 answer_bot.py
+$ python3 setup.py install
+$ hqbot
 Press s to screenshot live game or q to quit:
-...Question...
 ```
 
 ## Contributing
