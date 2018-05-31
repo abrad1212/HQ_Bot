@@ -1,10 +1,7 @@
-import os
-import sys
 import unittest
 from random import shuffle
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import answer_bot
+from hqbot import answer_bot
 
 
 class GoogleWikiTestCase(unittest.TestCase):

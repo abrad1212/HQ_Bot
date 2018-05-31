@@ -59,7 +59,8 @@ def load_json():
     """
 
     global REMOVE_WORDS, NEGATIVE_WORDS  # pylint: disable=W0603
-    settings_path = "Data/settings.json"
+    this_dir, _ = os.path.split(__file__)
+    settings_path = os.path.join(this_dir, "Data", "settings.json")
 
     with open(settings_path, "r", encoding="utf8") as settings_file:
         settings = json.loads(settings_file.read())
@@ -496,16 +497,19 @@ def get_points_live_v2():
     print('Total Elapsed Time: {}'.format(time.time() - start_time))
 
 
-if __name__ == "__main__":
+def main():
     load_json()
-
     while True:
-        KEYPRESSED = input('Press s to screenshot live game or q to quit:\n')
-        if KEYPRESSED == 's':
+        key_pressed = input('Press s to screenshot live game or q to quit:\n')
+        if key_pressed == 's':
             get_points_live_v2()
-        elif KEYPRESSED == 'o':
+        elif key_pressed == 'o':
             get_points_live()
-        elif KEYPRESSED == 'q':
+        elif key_pressed == 'q':
             break
         else:
             print(Colors.FAIL + "\nUnknown input" + Colors.ENDC)
+
+
+if __name__ == "__main__":
+    main()
