@@ -37,6 +37,8 @@ before_install: |
 
 install:
   - python -m pip install --user -r requirements.txt
+  - python -m pip install --user wheel
+  - python setup.py install
 
 script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
