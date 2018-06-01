@@ -28,6 +28,9 @@ from google import google
 from halo import Halo
 import pytesseract
 
+from .utils import setup_path
+from .utils import get_img_name
+
 if platform.system() == "Windows":
     PATH = 'C:\\Program Files (x86)\\Tesseract-OCR\\tesseract.exe'
     pytesseract.pytesseract.tesseract_cmd = PATH
@@ -71,7 +74,6 @@ def load_json():
         settings_file.close()
 
 
-# take screenshot of question
 def screen_grab(save, location):
     """Takes a screenshot of the user's screen
 
@@ -109,7 +111,7 @@ def preprocess_img(img):
     return gray
 
 
-def read_screen():
+def read_screen(save=False):
     """Takes a screenshot and processes the image.
     Then feeds the image to Google Tesseract OCR
 
@@ -120,8 +122,12 @@ def read_screen():
     spinner = Halo(text='Reading screen', spinner='bouncingBar')
     spinner.start()
 
-    screenshot_file = os.path.join('Screens', 'to_ocr.png')
-    image = screen_grab(save=False, location=screenshot_file)
+    if save:
+        screenshot_file = get_img_name()
+    else:
+        screenshot_file = None
+
+    image = screen_grab(save, location=screenshot_file)
     gray = preprocess_img(image)
 
     # load the image as a PIL/Pillow image, apply OCR, and then delete the temporary file
@@ -132,7 +138,7 @@ def read_screen():
     return text
 
 
-def parse_question():
+def parse_question(save=False):
     """Gets the question and options from Tesseract
 
     Returns:
@@ -140,7 +146,7 @@ def parse_question():
         List -- The options retrived from the screen
     """
 
-    text = read_screen()
+    text = read_screen(save)
     lines = text.splitlines()
     question = ""
     options = list()
@@ -214,7 +220,7 @@ def smart_answer(content, qwords):
 
 
 def split_string(source):
-    """Remove
+    """Split string
 
     Arguments:
         source {string} -- The string to be split
@@ -453,7 +459,7 @@ def get_points_live():
     print('Total Elapsed Time: {}'.format(time.time() - start_time))
 
 
-def get_points_live_v2():
+def get_points_live_v2(save=False):
     """ Handles all the logic to screenshot a live game
     with faster a faster execution time then `get_points_live()`"""
 
@@ -462,7 +468,7 @@ def get_points_live_v2():
     neg = False
 
     parse_question_time = time.time()
-    question, options = parse_question()
+    question, options = parse_question(save)
     print('Parse Question Elapsed Time: {} seconds'.format(
         time.time() - parse_question_time))
 
@@ -498,11 +504,19 @@ def get_points_live_v2():
 
 
 def main():
+    import argparse
+    parser = argparse.ArgumentParser(description="Flags for options")
+    parser.add_argument('-s', action='store_true',
+                        help="Whether the image of the question should be saved")
+    args = parser.parse_args()
+
+    setup_path()
+
     load_json()
     while True:
         key_pressed = input('Press s to screenshot live game or q to quit:\n')
         if key_pressed == 's':
-            get_points_live_v2()
+            get_points_live_v2(save=args.s)
         elif key_pressed == 'o':
             get_points_live()
         elif key_pressed == 'q':
