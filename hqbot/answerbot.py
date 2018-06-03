@@ -84,6 +84,8 @@ def screen_grab(save, location):
     Returns:
         Numpy Array -- The screenshotted image
     """
+    if location is not None and not isinstance(location, str):
+        raise TypeError("Please provide a string for the location argument.")
 
     img = ImageGrab.grab(bbox=(20, 260, 520, 700))
 
@@ -102,6 +104,8 @@ def preprocess_img(img):
     Returns:
         Numpy Array -- The preprocessed image
     """
+    if not isinstance(img, np.ndarray):
+        raise TypeError('Please provide a valid image as a numpy array for preprocessing.')
 
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
@@ -179,6 +183,9 @@ def simplify_ques(question, debug=False):
         String -- The preprocessed question
         Bool -- Whether the question contains a `NEGATIVE_WORD`
     """
+    if not isinstance(question, str):
+        raise TypeError('Please provide a string for a question.')
+
     if debug is True:
         load_json()
 
@@ -253,7 +260,6 @@ def get_page(link):
     Returns:
         Bytes -- The HTML retrieved from the link
     """
-
     try:
         if link.find('mailto') != -1:
             return ''
@@ -263,69 +269,7 @@ def get_page(link):
         html = urllib2.urlopen(req).read()
         return html
     except (urllib2.URLError, urllib2.HTTPError, ValueError) as error:
-        print("Get Page Error: {}".format(error))
-        return ''
-
-
-def google_wiki(sim_ques, options, neg):
-    """Googles the individual options' wikipedia page and
-    finds each occurence of each word in the question.
-    Then adds them up for that question's points.
-
-    Arguments:
-        sim_ques {string} -- The preprocessed question
-        options {array_like} -- A list of options
-        neg {bool} -- Whether the question contains a word from `NEGATIVE_WORDS`
-
-    Returns:
-        List -- Contains each option with their respective score
-        String -- The highest scoring option
-    """
-
-    spinner = Halo(text='Googling and searching Wikipedia', spinner='dots2')
-    spinner.start()
-
-    num_pages = 1
-    points = list()
-
-    content = ""
-    maxo = ""
-
-    maxp = -sys.maxsize
-    words = split_string(sim_ques)
-    for option in options:
-
-        option = option.lower()
-        original = option
-        option += ' wiki'
-
-        # get google search results for option + 'wiki'
-        search_wiki = google.search(option, num_pages)
-
-        link = search_wiki[0].link
-        content = get_page(link)
-        soup = BeautifulSoup(content, "lxml")
-        page = soup.get_text().lower()
-
-        temp = 0
-
-        for word in words:
-            temp = temp + page.count(word)
-
-        temp += smart_answer(page, words)
-
-        if neg:
-            temp *= -1
-
-        points.append(temp)
-        if temp > maxp:
-            maxp = temp
-            maxo = original
-
-    spinner.succeed()
-    spinner.stop()
-    return points, maxo
-
+        raise error
 
 def process_search(option, sim_ques, neg, points):
     """The worker function for processing each option's search
@@ -416,49 +360,6 @@ def google_wiki_faster(sim_ques, options, neg):
     return points, maxo
 
 
-def get_points_live():
-    """Handles all the logic to screenshot a live game """
-
-    start_time = time.time()
-
-    neg = False
-
-    parse_question_time = time.time()
-    question, options = parse_question()
-    print('Parse Question Elapsed Time: {} seconds'.format(
-        time.time() - parse_question_time))
-
-    simq = ""
-    points = []
-
-    simq, neg = simplify_ques(question)
-
-    maxo = ""
-    modifier = 1
-    if neg:
-        modifier = - 1
-
-    google_start_time = time.time()
-    try:
-        points, maxo = google_wiki(simq, options, neg)
-    except IndexError as error:
-        print("Sorry nothing could be searched")
-        print("Error: {}".format(error))
-
-    print("Points: {}".format(points))
-    print('Google Search Elapsed Time: {} seconds'.format(
-        time.time() - google_start_time))
-
-    print("\n" + Colors.UNDERLINE + question + Colors.ENDC + "\n")
-    for point, option in zip(points, options):
-        if maxo == option.lower():
-            option = Colors.OKGREEN + option + Colors.ENDC
-        print(option + " { points: " + Colors.BOLD +
-              str(point * modifier) + Colors.ENDC + " } \n")
-
-    print('Total Elapsed Time: {}'.format(time.time() - start_time))
-
-
 def get_points_live_v2(save=False):
     """ Handles all the logic to screenshot a live game
     with faster a faster execution time then `get_points_live()`"""
@@ -517,8 +418,6 @@ def main():
         key_pressed = input('Press s to screenshot live game or q to quit:\n')
         if key_pressed == 's':
             get_points_live_v2(save=args.s)
-        elif key_pressed == 'o':
-            get_points_live()
         elif key_pressed == 'q':
             break
         else:

@@ -43,9 +43,6 @@ pylint==1.9.1
 pyparsing==2.2.0
 pyscreenshot==0.4.2
 pytesseract==0.2.0
-pytest==3.6.0
-pytest-cache==1.0
-pytest-pep8==1.0.6
 python-dateutil==2.7.3
 pytz==2018.4
 PyYAML==3.12

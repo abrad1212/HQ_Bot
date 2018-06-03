@@ -10,6 +10,9 @@ matrix:
     - os: osx
       language: generic
       env: PYTHON=3.6.5 TEST_MODE=PEP8
+    - os: osx
+      language: generic
+      env: PYTHON=3.6.5 TEST_MODE=COV
 
 # command to install dependencies
 before_install: |
@@ -37,12 +40,16 @@ before_install: |
 
 install:
   - python -m pip install --user -r requirements.txt
+  - python -m pip install --user -r dev-requirements.txt
   - python -m pip install --user wheel
   - python setup.py install
 
 script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
       pytest --pep8;
+    elif [[ "$TEST_MODE" == "COV" ]]; then
+      coverage run --source hqbot -m pytest;
+      coverage report -m;
     else
       pytest;
     fi

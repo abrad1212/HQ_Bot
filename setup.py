@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools import find_packages
 
-setup(name="HQ Bot",
+setup(name="HQBot",
       version="1.0.0",
       description="A HQ Trivia Bot",
       license="MIT",
@@ -10,7 +10,6 @@ setup(name="HQ Bot",
       author_email="abrad12122@gmail.com",
       url="https://github.com/abrad1212/HQ_Bot",
 
-      packages=find_packages(),
       install_requires=[
           "beautifulsoup4",
           "lxml",
@@ -26,15 +25,18 @@ setup(name="HQ Bot",
       extras_require={
           'tests': ["pytest",
                     "pytest-pep8",
-                    "pytest-cache"]
+                    "pytest-cache",
+                    "pytest-xdist",
+                    "pytest-cov"]
       },
 
       include_package_data=True,
 
       entry_points={
           'console_scripts': [
-              "answer-bot=hqbot.answer_bot:main",
-              "hq-bot=hqbot.answer_bot:main",
-              "hqbot=hqbot.answer_bot:main"
+              "answer-bot=hqbot.answerbot:main",
+              "hq-bot=hqbot.answerbot:main",
+              "hqbot=hqbot.answerbot:main"
           ]
-      })
+      },
+      packages=find_packages())
