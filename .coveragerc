@@ -1,3 +1,7 @@
+[run]
+branch = False
+source = hqbot
+
 [report]
 # Regexes for lines to exclude from consideration
 exclude_lines =
@@ -9,6 +13,3 @@ exclude_lines =
 
 # fail_under = 85
 show_missing = True
-
-[run]
-source=hqbot
