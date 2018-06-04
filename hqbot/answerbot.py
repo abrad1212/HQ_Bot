@@ -271,6 +271,7 @@ def get_page(link):
     except (urllib2.URLError, urllib2.HTTPError, ValueError) as error:
         raise error
 
+
 def process_search(option, sim_ques, neg, points):
     """The worker function for processing each option's search
 

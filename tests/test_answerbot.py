@@ -28,6 +28,7 @@ SIMPLIFY_QUES_DATA = [
     )
 ]
 
+
 def test_screen_grab():
     assert isinstance(answerbot.screen_grab(save=False, location=None), np.ndarray)
 

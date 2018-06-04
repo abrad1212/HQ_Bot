@@ -37,3 +37,24 @@ def get_img_name():
 
     img_path = os.path.join(imgs_path, img_name)
     return img_path
+
+
+def timeit(method):
+    """
+    A decorator to time the execution of functions
+    """
+
+    def timed(*args, **kw):
+        time_start = time.time()
+        result = method(*args, **kw)
+        time_end = time.time()
+
+        if 'log_time' in kw:
+            name = kw.get('log_name', method.__name__.upper())
+            kw['log_name'][name] = int((time_end - time_start) * 1000)
+        else:
+            miliseconds = (time_end - time_start) * 1000
+            seconds = (miliseconds / 1000) % 60 # Probably a more efficient way to do this
+            print('{0:s} {1:f} seconds'.format(method.__name__, seconds))
+        return result
+    return timed
