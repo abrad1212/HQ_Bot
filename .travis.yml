@@ -45,9 +45,9 @@ install:
 
 script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
-      pytest --pep8;
+      pytest --pep8 hqbot;
     else
-      pytest;
+      pytest tests/test_answerbot.py --cov=codecov;
     fi
 
 after_success:

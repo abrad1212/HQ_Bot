@@ -54,7 +54,7 @@ def timeit(method):
             kw['log_name'][name] = int((time_end - time_start) * 1000)
         else:
             miliseconds = (time_end - time_start) * 1000
-            seconds = (miliseconds / 1000) % 60 # Probably a more efficient way to do this
+            seconds = (miliseconds / 1000) % 60  # Probably a more efficient way to do this
             print('{0:s} {1:f} seconds'.format(method.__name__, seconds))
         return result
     return timed
