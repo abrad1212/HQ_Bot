@@ -10,19 +10,15 @@ matrix:
     - os: osx
       language: generic
       env: PYTHON=3.6.5 TEST_MODE=PEP8
-    - os: osx
-      language: generic
-      env: PYTHON=3.6.5 TEST_MODE=COV
 
 # command to install dependencies
 before_install: |
   if [ "$TRAVIS_OS_NAME" == "osx" ]; then
     brew update
     # Per the `pyenv homebrew recommendations <https://github.com/yyuu/pyenv/wiki#suggested-build-environment>`_.
-    brew install openssl readline
-    brew install tesseract # install Google Tesseract
+    brew outdated openssl readline || brew upgrade openssl readline
+    brew outdated tesseract || brew upgrade tesseract # install Google Tesseract
     # See https://docs.travis-ci.com/user/osx-ci-environment/#A-note-on-upgrading-packages.
-    # I didn't do this above because it works and I'm lazy.
     brew outdated pyenv || brew upgrade pyenv
     # virtualenv doesn't work without pyenv knowledge. venv in Python 3.3
     # doesn't provide Pip by default. So, use `pyenv-virtualenv <https://github.com/yyuu/pyenv-virtualenv/blob/master/README.md>`_.
@@ -42,15 +38,15 @@ before_install: |
 install:
   - python -m pip install --user -r requirements.txt
   - python -m pip install --user -r dev-requirements.txt
-  - python -m pip install --user wheel
+  - python -m pip install --user wheel codecov
   - python setup.py install
 
 script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
       pytest --pep8;
-    elif [[ "$TEST_MODE" == "COV" ]]; then
-      coverage run --source hqbot -m pytest;
-      coverage report -m;
     else
       pytest;
     fi
+
+after_success:
+  - codecov
