@@ -4,8 +4,6 @@ import numpy as np
 
 from hqbot import answerbot
 
-import codecov
-
 SIMPLIFY_QUES_DATA = [
     # question, clean_question, neg
     (
