@@ -47,7 +47,7 @@ script:
   - if [[ "$TEST_MODE" == "PEP8" ]]; then
       pytest --pep8 hqbot;
     else
-      pytest tests/test_answerbot.py --cov=hqbot;
+      pytest --cov=hqbot tests/;
     fi
 
 after_success:
