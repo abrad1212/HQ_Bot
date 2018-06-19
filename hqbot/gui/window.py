@@ -13,6 +13,7 @@ from PyQt5.QtWidgets import QLabel, QPushButton, QVBoxLayout, QHBoxLayout
 from QtImageViewer import QtImageViewer # pylint: disable=E0401
 
 from hqbot import answerbot_v2 as answerbot
+from hqbot import question
 
 class HQGUI(QWidget):
     def __init__(self):
@@ -45,57 +46,40 @@ class HQGUI(QWidget):
         self.viewer.canPan = False
 
         question_label = QLabel()
+        question_label.setObjectName('questionLabel')
         question_label.setText('Question:')
         question_label.setAlignment(Qt.AlignCenter)
-        question_label.setStyleSheet("font:28px  Cornerstone;"
-                                     "font-weight: bold;"
-                                     "color: #EF9A9A;")
 
         self.question_holder = QLabel()
-        self.question_holder.setText('Lorem Ipsum')
+        self.question_holder.setObjectName('questionHolder')
+        self.question_holder.setText('Lorem Ipsum?')
         self.question_holder.setAlignment(Qt.AlignCenter)
-        self.question_holder.setStyleSheet("font:28px  Cornerstone;"
-                                           "font-weight: bold;"
-                                           "color: #FFCC80;")
 
         choices_label = QLabel()
-        choices_label.setText("Choices:")
+        choices_label.setObjectName('choicesLabel')
+        choices_label.setText('Choices:')
         choices_label.setAlignment(Qt.AlignCenter)
-        choices_label.setStyleSheet("font:28px  Cornerstone;"
-                                    "font-weight: bold;"
-                                    "color: #EF9A9A;")
 
         # Choices
         self.choice_one = QLabel()
         self.choice_one.setText("1.")
         self.choice_one.setAlignment(Qt.AlignCenter)
-        self.choice_one.setStyleSheet("font:28px  Cornerstone;"
-                                      "font-weight: bold;"
-                                      "color: black;")
 
         self.choice_two = QLabel()
         self.choice_two.setText("2.")
         self.choice_two.setAlignment(Qt.AlignCenter)
-        self.choice_two.setStyleSheet("font:28px  Cornerstone;"
-                                      "font-weight: bold;"
-                                      "color: black;")
 
         self.choice_three = QLabel()
         self.choice_three.setText("3.")
         self.choice_three.setAlignment(Qt.AlignCenter)
-        self.choice_three.setStyleSheet("font:28px  Cornerstone;"
-                                        "font-weight: bold;"
-                                        "color: black;")
 
         # Buttons
         screenshot_btn = QPushButton('Screenshot', self)
-        screenshot_btn.setStyleSheet("font:36px Roboto;"
-                                     "font-weight:bold;")
+        screenshot_btn.setObjectName('screenshotBtn')
         screenshot_btn.clicked.connect(self.screenshot_click)
 
         quit_btn = QPushButton('Quit', self)
-        quit_btn.setStyleSheet("font:36px Roboto;"
-                               "font-weight:bold;")
+        quit_btn.setObjectName('quitBtn')
         quit_btn.clicked.connect(self.close)
 
         # Image Viewer
@@ -106,16 +90,16 @@ class HQGUI(QWidget):
 
         # Question Holder
         vbox.addWidget(self.question_holder)
-        vbox.addSpacing(25)
+        vbox.addSpacing(50)
 
         # Choice Label
         vbox.addWidget(choices_label)
-        #vbox.addSpacing(25)
 
         # Choices
         vbox.addWidget(self.choice_one)
         vbox.addWidget(self.choice_two)
         vbox.addWidget(self.choice_three)
+        vbox.addSpacing(10)
 
         # Buttons
         hbox.addWidget(screenshot_btn)
@@ -123,7 +107,6 @@ class HQGUI(QWidget):
         vbox.addLayout(hbox)
 
         self.setLayout(vbox)
-
         self.show()
 
     def center(self):
@@ -144,7 +127,6 @@ class HQGUI(QWidget):
 
     def choice_text(self, choices):
         if len(choices) != 3:
-            # Figure this out later
             return
         self.choice_one.setText(choices[0])
         self.choice_two.setText(choices[1])
@@ -166,6 +148,15 @@ class HQGUI(QWidget):
         )
         self.viewer.show()
 
+        text = answerbot.get_text()
+        ques, options = question.parse(text)
+
+        if '?' in ques:
+            self.question_text(ques)
+            self.choice_text(options)
+        else:
+            self.question_text("No question was found. Try running again.")
+
 
 def get_palette():
     palette = QtGui.QPalette()
@@ -186,13 +177,20 @@ def get_palette():
 
 
 if __name__ == "__main__":
-    app = QApplication(sys.argv)
-    database = QFontDatabase()
+    base_path = os.path.dirname(os.path.abspath(__file__))
+    style_path = os.path.join(base_path, 'content', 'stylesheets')
+    fonts_path = os.path.join(base_path, 'content', 'fonts')
 
-    base_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    database.addApplicationFont(os.path.join(base_path, 'content', 'fonts', 'Cornerstone.ttf'))
-    database.addApplicationFont(os.path.join(base_path, 'content', 'fonts', 'Roboto-Light.ttf'))
-    database.addApplicationFont(os.path.join(base_path, 'content', 'fonts', 'Roboto-Medium.ttf'))
+    app = QApplication(sys.argv)
+
+    database = QFontDatabase()
+    database.addApplicationFont(os.path.join(fonts_path, 'Cornerstone.ttf'))
+    database.addApplicationFont(os.path.join(fonts_path, 'Roboto-Light.ttf'))
+    database.addApplicationFont(os.path.join(fonts_path, 'Roboto-Medium.ttf'))
+
+    with open(os.path.join(style_path, 'app.qss')) as stylesheet:
+        app.setStyleSheet(stylesheet.read())
+        stylesheet.close()
 
     app.setStyle(QStyleFactory().create("Fusion"))
     app.setPalette(get_palette())

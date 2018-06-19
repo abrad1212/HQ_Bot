@@ -1,0 +1,37 @@
+QPushButton {
+    border: 0;
+
+    font-size: 36px;
+    font-family: "Roboto";
+    font-weight: bold;
+}
+
+QPushButton#screenshotBtn {
+    background-color: #90CAF9;
+    border-bottom-left-radius: 20px;
+}
+
+QPushButton#quitBtn {
+    background-color: #E97777;
+    border-bottom-right-radius: 20px;
+}
+
+
+QLabel {
+    color: black;
+    font-size: 28px;
+    font-family: "Cornerstone";
+    font-weight: bold;
+}
+
+QLabel#questionLabel {
+    color: #EF9A9A;
+}
+
+QLabel#questionHolder {
+    color: #FFCC80;
+}
+
+QLabel#choicesLabel {
+    color: #EF9A9A;
+}
