@@ -24,9 +24,9 @@ from PIL import ImageGrab
 from bs4 import BeautifulSoup
 import numpy as np
 
-from google import google
-from halo import Halo
 import pytesseract
+from halo import Halo
+from google import google
 
 from .utils import setup_path
 from .utils import get_img_name
@@ -54,6 +54,9 @@ REMOVE_WORDS = []
 # negative words
 NEGATIVE_WORDS = []
 
+# Should the image screenshoted be saved
+SAVE = False
+
 
 def load_json():
     """
@@ -74,11 +77,10 @@ def load_json():
         settings_file.close()
 
 
-def screen_grab(save, location):
+def screen_grab(location):
     """Takes a screenshot of the user's screen
 
     Arguments:
-        save {bool} -- Whether to save the image
         location {string} -- The location to save the image if `save` is True
 
     Returns:
@@ -89,7 +91,7 @@ def screen_grab(save, location):
 
     img = ImageGrab.grab(bbox=(20, 260, 520, 700))
 
-    if save:
+    if SAVE:
         img.save(location)
 
     return np.array(img)
@@ -115,7 +117,7 @@ def preprocess_img(img):
     return gray
 
 
-def read_screen(save=False):
+def read_screen():
     """Takes a screenshot and processes the image.
     Then feeds the image to Google Tesseract OCR
 
@@ -126,31 +128,41 @@ def read_screen(save=False):
     spinner = Halo(text='Reading screen', spinner='bouncingBar')
     spinner.start()
 
-    if save:
+    if SAVE:
         screenshot_file = get_img_name()
     else:
         screenshot_file = None
 
-    image = screen_grab(save, location=screenshot_file)
+    image = screen_grab(location=screenshot_file)
     gray = preprocess_img(image)
 
     # load the image as a PIL/Pillow image, apply OCR, and then delete the temporary file
-    text = pytesseract.image_to_string(Image.fromarray(gray))
+    text = pytesseract.image_to_string(Image.fromarray(gray), lang="eng")
 
     spinner.succeed()
     spinner.stop()
     return text
 
 
-def parse_question(save=False):
+def parse_question(debug=False, data=None):
     """Gets the question and options from Tesseract
 
     Returns:
         String -- The retrieved question
         List -- The options retrived from the screen
     """
+    if not isinstance(debug, bool):
+        raise TypeError("Please provide a boolean for the `debug` argument.")
+    if data is not None and not isinstance(data, str):
+        raise TypeError("Please provide a list for the `data` argument.")
 
-    text = read_screen(save)
+    if debug is False:
+        text = read_screen()
+    else:
+        if data is None:
+            raise TypeError("Please provide a string for the `data` argument.")
+        text = data
+
     lines = text.splitlines()
     question = ""
     options = list()
@@ -211,18 +223,20 @@ def smart_answer(content, qwords):
 
     Arguments:
         content {bytes} -- The HTML of the webpage to search for `qwords`
-        qwords {list} -- List of string containg each word of the question
+        qwords {list} -- List of strings containg each word of the question
 
     Returns:
         int -- The points calculated
     """
-
+    stime = time.time()
     zipped = zip(qwords, qwords[1:])
     points = 0
     for element in zipped:
         if content.count(element[0] + " " + element[1]) != 0:
             points += 1000
             print(points)
+
+    print("Smart Answer Elapsed Time: {}".format(time.time() - stime))
     return points
 
 
@@ -235,6 +249,8 @@ def split_string(source):
     Returns:
         string -- Split string
     """
+    if not isinstance(source, str):
+        raise TypeError("Please provide a string for the `source` argument.")
 
     splitlist = ",!-.;/?@ #"
     output = []
@@ -284,6 +300,14 @@ def process_search(option, sim_ques, neg, points):
     Returns:
         List -- Contains all the options and the one with the highest score
     """
+    if not isinstance(option, str):
+        raise TypeError("Please provide a string for the `option` argument.")
+    if not isinstance(sim_ques, str):
+        raise TypeError("Please provide a string for the `sim_ques` argument.")
+    if not isinstance(neg, bool):
+        raise TypeError("Please provide a boolean for the `neg` argument.")
+    if not isinstance(points, list):
+        raise TypeError("Please provide a list for the `points` argument.")
 
     option = option.lower()
     original = option
@@ -325,13 +349,19 @@ def google_wiki_faster(sim_ques, options, neg):
 
     Arguments:
         sim_ques {string} -- The preprocessed question
-        options {array_like} -- A list of options
+        options {list} -- A list of options
         neg {bool} -- Whether the question contains a word from `NEGATIVE_WORDS`
 
     Returns:
         List -- Contains each option with their respective score
         String -- The highest scoring option
     """
+    if not isinstance(sim_ques, str):
+        raise TypeError("Please provide a string for the `sim_ques` argument.")
+    if not isinstance(options, list):
+        raise TypeError("Please provide a list for the `options` argument")
+    if not isinstance(neg, bool):
+        raise TypeError("Please provide a boolean for the `neg` argument.")
 
     spinner = Halo(text='Googling and searching Wikipedia', spinner='dots2')
     spinner.start()
@@ -361,25 +391,22 @@ def google_wiki_faster(sim_ques, options, neg):
     return points, maxo
 
 
-def get_points_live_v2(save=False):
-    """ Handles all the logic to screenshot a live game
-    with faster a faster execution time then `get_points_live()`"""
+def get_points_live():
+    """ Handles all the logic to screenshot a live game """
 
     start_time = time.time()
 
     neg = False
 
     parse_question_time = time.time()
-    question, options = parse_question(save)
+    question, options = parse_question()
     print('Parse Question Elapsed Time: {} seconds'.format(
         time.time() - parse_question_time))
 
-    simq = ""
     points = []
 
     simq, neg = simplify_ques(question)
 
-    maxo = ""
     modifier = 1
     if neg:
         modifier = - 1
@@ -406,11 +433,14 @@ def get_points_live_v2(save=False):
 
 
 def main():
+    global SAVE
+
     import argparse
     parser = argparse.ArgumentParser(description="Flags for options")
     parser.add_argument('-s', action='store_true',
                         help="Whether the image of the question should be saved")
     args = parser.parse_args()
+    SAVE = args.s
 
     setup_path()
 
@@ -418,11 +448,16 @@ def main():
     while True:
         key_pressed = input('Press s to screenshot live game or q to quit:\n')
         if key_pressed == 's':
-            get_points_live_v2(save=args.s)
+            get_points_live()
         elif key_pressed == 'q':
             break
         else:
             print(Colors.FAIL + "\nUnknown input" + Colors.ENDC)
+
+
+def main_gui():
+    setup_path()
+    load_json()
 
 
 if __name__ == "__main__":
